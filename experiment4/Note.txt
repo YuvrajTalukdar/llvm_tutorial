@@ -1,0 +1,7 @@
+1. Prints the entire program function by function.
+2. cmake has 2 compile modes, Debug and Release
+3. Build instruction 
+    a. mkdir build
+    b. cd build
+    c. cmake -DCMAKE_BUILD_TYPE=Release .. or cmake -DCMAKE_BUILD_TYPE=Debug ..
+    d. make -j 2

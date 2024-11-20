@@ -1,0 +1,53 @@
+	.text
+	.file	"test1.cpp"
+                                        // Start of file scope inline assembly
+	.globl	_ZSt21ios_base_library_initv
+
+                                        // End of file scope inline assembly
+	.globl	main                            // -- Begin function main
+	.p2align	2
+	.type	main,@function
+main:                                   // @main
+	.cfi_startproc
+// %bb.0:
+	sub	sp, sp, #32
+	.cfi_def_cfa_offset 32
+	stp	x29, x30, [sp, #16]             // 16-byte Folded Spill
+	add	x29, sp, #16
+	.cfi_def_cfa w29, 16
+	.cfi_offset w30, -8
+	.cfi_offset w29, -16
+	stur	wzr, [x29, #-4]
+	str	wzr, [sp, #8]
+.LBB0_1:                                // =>This Inner Loop Header: Depth=1
+	ldr	w8, [sp, #8]
+	cmp	w8, #10
+	b.ge	.LBB0_4
+// %bb.2:                               //   in Loop: Header=BB0_1 Depth=1
+	ldr	w1, [sp, #8]
+	adrp	x8, :got:_ZSt4cout
+	ldr	x0, [x8, :got_lo12:_ZSt4cout]
+	bl	_ZNSolsEi
+	adrp	x8, :got:_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_
+	ldr	x1, [x8, :got_lo12:_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_]
+	bl	_ZNSolsEPFRSoS_E
+// %bb.3:                               //   in Loop: Header=BB0_1 Depth=1
+	ldr	w8, [sp, #8]
+	add	w8, w8, #1
+	str	w8, [sp, #8]
+	b	.LBB0_1
+.LBB0_4:
+	mov	w0, wzr
+	.cfi_def_cfa wsp, 32
+	ldp	x29, x30, [sp, #16]             // 16-byte Folded Reload
+	add	sp, sp, #32
+	.cfi_def_cfa_offset 0
+	.cfi_restore w30
+	.cfi_restore w29
+	ret
+.Lfunc_end0:
+	.size	main, .Lfunc_end0-main
+	.cfi_endproc
+                                        // -- End function
+	.ident	"clang version 18.1.8"
+	.section	".note.GNU-stack","",@progbits

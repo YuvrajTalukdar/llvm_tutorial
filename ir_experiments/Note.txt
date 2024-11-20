@@ -1,0 +1,47 @@
+1. Generating assembly: 
+    clang++ -S test1.cpp -o test1.ll
+    clang -S test1.cpp -o test1.ll
+
+2. Generating LLVM IR:
+    clang++ -S -emit-llvm test1.cpp -o test1.ir
+    clang -S -emit-llvm test1.cpp -o test1.ir
+
+3. Generating cfg from LLVM IR (the below command works on llvm 18)
+    opt -passes=dot-cfg -disable-output test1.ir
+    generates a file .main.dot
+    Vausalizing a dot file
+    dot -Tpng .main.dot -o calee.png
+    this requires graphviz installed.
+
+4. Generating assembly file targetting a particular atchitecture
+    llc test1.ir -march=x86 -o test1.x86
+
+5. Genarates LLVM IR with optnone disabled which allows the ir to be optimized further
+    clang -Xclang -disable-O0-optnone -S -emit-llvm test2.c -o test2_optnone.ir
+
+6. Optimize the vars by storing them in registers
+    opt -S -passes=mem2reg test2_optnone.ir -o test2_optnone_optimized.ir
+
+7. Translate llvm ir to bytecode. Byte code are the binary representation of llvm ir.
+    llvm-as test2_optnone_optimized.ir -o test2_opt.bc
+
+8. Generate the binary from the x86 assembly. as is the GNU assembles, the default assembler in linux.
+    as test2_opt.x86 -o test2_opt.o
+
+9. Generate the binary from the llvm ir.
+    llvm-as test2_optnone_optimized.ir -o test2_opt.o
+
+10. Viewing the list of available passes in opt: opt --print-passes
+  opt --print-passes | grep dot
+  dot-callgraph
+  print-lcg-dot
+  dot-cfg
+  dot-cfg-only
+  dot-dom
+  dot-dom-only
+  dot-post-dom
+  dot-post-dom-only
+  dot-ddg
+
+11. Generating the ast from a c++ program
+    clang++ -c -Xclang -ast-dump test1.cpp > test1.as

@@ -1,0 +1,25 @@
+Writing a basic pass to print all the functions present in a cpp file.
+1. Generate the IR of the target file
+    a. We need to enable optimization in the IR so that the pass gets to process the file.
+    b. clang++ -O1 -S -emit-llvm test1.cpp -o test1.ll
+
+2. Compile the pass program as a .so library file.
+   Note: we can use both g++ or clang++ for this.
+    a. Manual compilation steps to generate the pass's shared library.
+        i.  Generate the object file.
+            clang++ PrintFunctionNames.cpp -c -fno-rtti -fPIC
+        ii. Generate the shared library file from the object file. 
+            clang++ -shared -o libPrintFunctionNames.so PrintFunctionNames.o
+    b. Automatic compilation steps using cmake
+        i.   mkdir build
+        ii.  cd build
+        iii. cmake -G Ninja .. //for using ninja as the build system
+                    or
+             cmake -G .. //for using make as the build system
+             
+
+3. Use load the compiled pass library as a plugin 
+    a. With debug mode: pt -load-pass-plugin=./../build/libPrintFunctionNames.so -passes=print-function-names -disable-output -debug-pass-manager < test1.ll
+    b. With no debug mode: opt -load-pass-plugin=./../build/libPrintFunctionNames.so -passes=print-function-names -disable-output < test1.ll
+    c. Debug mode helps which instruction are getting processed by the pass.
+

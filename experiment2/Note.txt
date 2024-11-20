@@ -1,0 +1,20 @@
+1. Story of clang tooling on Arch and may be on Gentoo and Fedora
+    https://www.reddit.com/r/archlinux/comments/1fwobza/clang_shared_library_missing/
+
+    https://gitlab.archlinux.org/archlinux/packaging/packages/clang/-/commit/aaab40456297f626dfd60ad6632559c65d86bf6b
+
+
+    new upstream release; switch to libclang-cpp
+
+    We no longer build with BUILD_SHARED_LIBS=ON; programs linking to clang
+    are required to link to libclang-cpp.so instead of individual libraries.
+
+    Gentoo and Fedora have moved in this direction as well, with the latter
+    being documented at https://bugzilla.redhat.com/show_bug.cgi?id=1787375.
+
+2. To check the presence of libclang-cpp.so 
+    ls $(llvm-config --libdir)/libclang-cpp.so
+
+3. Command for compiling cuda code using clang++
+clang++ wrapper_code.cu --cuda-path=/opt/cuda/ -lcudart -L /opt/cuda/lib64 -I /opt/cuda/include --cuda-gpu-arch=sm_86
+clang++ hello_world.cu -lcudart -L /opt/cuda/lib64 --cuda-gpu-arch=sm_86

@@ -1,0 +1,7 @@
+digraph "Call graph: test2_optnone_optimized.ir" {
+	label="Call graph: test2_optnone_optimized.ir";
+
+	Node0x57f08658bb30 [shape=record,label="{callee}"];
+	Node0x57f08658bbb0 [shape=record,label="{main}"];
+	Node0x57f08658bbb0 -> Node0x57f08658bb30;
+}

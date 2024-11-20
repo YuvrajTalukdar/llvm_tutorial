@@ -1,0 +1,8 @@
+1. Managed to print the program.
+2. Managed to access and modify a particular line in particular function.
+3. Added a new method of printing the parsed program after modification.
+4. Build instruction 
+    a. mkdir build
+    b. cd build
+    c. cmake -DCMAKE_BUILD_TYPE=Release .. or cmake -DCMAKE_BUILD_TYPE=Debug ..
+    d. make -j 2
