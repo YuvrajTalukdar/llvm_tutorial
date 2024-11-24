@@ -1,10 +1,7 @@
-//#include "clang/AST/AST.h"
-//#include "clang/AST/ASTConsumer.h"
-//#include "clang/Frontend/FrontendAction.h"
 #include "clang/Frontend/CompilerInstance.h"
-//#include "llvm/Support/CommandLine.h"
-//#include "clang/Basic/SourceManager.h"
-//#include "clang/Lex/Lexer.h"
+
+#include "clang/Basic/SourceManager.h"
+#include "clang/Lex/Lexer.h"
 
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Tooling.h"
@@ -12,75 +9,75 @@
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Rewrite/Core/Rewriter.h"
 
-//#include "PrintProgram.h"
+#include "clang/AST/ASTTypeTraits.h" //#include "clang/AST/DynTypedNode.h"
+#include "clang/AST/ParentMapContext.h"
 
 using namespace clang;
 using namespace clang::tooling;
+using namespace std;
 
 class FunctionVisitor : public RecursiveASTVisitor<FunctionVisitor> 
 {
 public:
     explicit FunctionVisitor(ASTContext *Context,Rewriter &R) : Context(Context),Rewrite(R) {}
 
-    bool VisitFunctionDecl(FunctionDecl *F) 
+    bool VisitStmt(Stmt *S) 
     {
-        if (Context->getSourceManager().isInMainFile(F->getLocation()) &&
-            F->hasBody()) 
-        { // Check if the function has a body
-            //if(F->hasAttr<CUDAHostAttr>())
-            //{   llvm::outs() << "Host Function name: " << F->getNameInfo().getName().getAsString()<< "\n";}
-            //if(F->hasAttr<CUDADeviceAttr>())
-            //{   llvm::outs() << "Device Function name: " << F->getNameInfo().getName().getAsString()<< "\n";}
-            if(F->hasAttr<CUDAGlobalAttr>())
-            {   
-                llvm::outs() << "Kernal Function name: " << F->getNameInfo().getName().getAsString()<< "\n";
-                kernel_transformed=false;
-                //return TraverseStmt(F->getBody());
-            }
-        }
-        return true; // Continue traversal
-    }
-
-    bool VisitCallExpr(CallExpr *Call) {
-        // Check if the call is a `printf` statement
-        if(!kernel_transformed)
+        // Get the declaration that this expression refers to
+        bool Result;
+        if (auto *CallExprNode = dyn_cast<CallExpr>(S)) 
         {
-            if (const FunctionDecl *FD = Call->getDirectCallee()) {
-                if (FD->getNameAsString() == "printf") {
-                    llvm::outs()<<"printf found!!";
-                    //Helps access each arguments of a function call
-                    /*
-                    SourceManager &SM = Rewrite.getSourceMgr();
+            if(const FunctionDecl *FD = CallExprNode->getDirectCallee())
+            {
+                if (FD->getNameAsString() == "foo109") 
+                {
+                    llvm::outs()<<"foo107 found!! ";
+                    DynTypedNode currentNode = Context->getParents(*CallExprNode)[0];
+                    while (true) 
+                    {
+                        const DynTypedNodeList &parents = Context->getParents(currentNode);
+                        if (parents.empty()) {
+                            llvm::errs() << "No more parents.\n";
+                            break;
+                        }
 
-                    // Replace "printf(...)" with "std::cout << ..."
-                    std::string Replacement = "for(int a=0;a<10;a++)\n\t{\n\t";
-                    Replacement+=FD->getNameAsString()+"(";
-                    for (unsigned i = 0; i < Call->getNumArgs(); ++i) {
-                        
-                        if (i > 0) Replacement += ",";
-                        Replacement += Lexer::getSourceText(
-                            CharSourceRange::getTokenRange(Call->getArg(i)->getSourceRange()), SM,
-                            Rewrite.getLangOpts())
-                            .str();
-                        Replacement+=");\n\t}";
+                        // Process each parent (usually there's just one)
+                        const auto &parent = parents[0];
+                        llvm::errs() << "Parent node type: " << parent.getNodeKind().asStringRef() << "\n";
+                        if(parent.getNodeKind().asStringRef()=="CompoundStmt")
+                        {
+                            const Stmt *stmt = currentNode.get<Stmt>();
+                            SourceLocation beginLoc = stmt->getBeginLoc();
+                            SourceLocation endLoc = stmt->getEndLoc();
+                            if(beginLoc.isValid() && endLoc.isValid())
+                            {
+                                Rewrite.InsertText(beginLoc, "for (int i = 0; i < 10; ++i) {\n\t ", true, true);
+                                
+                                //Below code may result in } being placed before the ;
+                                //Rewrite.InsertTextAfterToken(endLoc, ";\n\t}");
+                                //Rewrite.InsertTextAfterToken(endLoc.getLocWithOffset(2), "\n\t}");
+
+                                //Fix for the ; location problem is to get the exact location of the ; using Lexer. Below is the solution.
+                                const SourceManager &SM = Context->getSourceManager();
+                                SourceLocation semiLoc = Lexer::findNextToken(endLoc, SM, Context->getLangOpts())->getLocation();
+
+                                if (semiLoc.isValid()) {
+                                    // Adjust to be after the semicolon.
+                                    SourceLocation AfterSemi = semiLoc.getLocWithOffset(1);
+                                    Rewrite.InsertTextAfterToken(semiLoc, "\n\t}");
+                                }
+                            }
+                            
+                            break;
+                        }
+                        // Move to the parent for the next iteration
+                        currentNode = parent;
                     }
-                    Rewrite.ReplaceText(Call->getSourceRange(), Replacement);
-                    
-                    SourceLocation SemiLoc =Call->getExprStmt()->getEndLoc();
-                    Rewrite.RemoveText(SemiLoc.getLocWithOffset(1), 1);
-                    */
-
-                    Rewrite.InsertText(Call->getBeginLoc(), "for (int i = 0; i < 10; ++i) {\n\t ", true, true);
-                    Rewrite.InsertTextAfterToken(Call->getEndLoc(), ";\n\t}");
-
-                    SourceLocation SemiLoc =Call->getExprStmt()->getEndLoc();
-                    Rewrite.RemoveText(SemiLoc.getLocWithOffset(1), 1);
-
-                    kernel_transformed=true;
                 }
             }
         }
-        return true;
+
+        return true; // Continue traversal
     }
 
     bool VisitCUDAKernelCallExpr(CUDAKernelCallExpr *KernelCall) {

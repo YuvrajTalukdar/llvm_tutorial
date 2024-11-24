@@ -6,3 +6,45 @@
     b. cd build
     c. cmake -DCMAKE_BUILD_TYPE=Release .. or cmake -DCMAKE_BUILD_TYPE=Debug ..
     d. make -j 2
+
+
+Example of a AST of a function body also called "CompoundStmt"
+
+__global__
+void f00107()
+{
+    int x,y;
+    x=foo109(x)+1;
+    x=printf("Hello World from device");
+    y=x+y;
+}
+
+[0;34m|-[0m[0;1;32mFunctionDecl[0m[0;33m 0x5e73bb52bd38[0m <[0;33mline:109:9[0m, [0;33mwrapper_code.cu:43:1[0m> [0;33mline:37:6[0m[0;1;36m f00107[0m [0;32m'void ()'[0m
+[0;34m| |-[0m[0;1;35mCompoundStmt[0m[0;33m 0x5e73bb52c308[0m <[0;33mline:38:1[0m, [0;33mline:43:1[0m>
+[0;34m| | |-[0m[0;1;35mDeclStmt[0m[0;33m 0x5e73bb52bf50[0m <[0;33mline:39:5[0m, [0;33mcol:12[0m>
+[0;34m| | | |-[0m[0;1;32mVarDecl[0m[0;33m 0x5e73bb52be50[0m <[0;33mcol:5[0m, [0;33mcol:9[0m> [0;33mcol:9[0m used[0;1;36m x[0m [0;32m'int'[0m
+[0;34m| | | `-[0m[0;1;32mVarDecl[0m[0;33m 0x5e73bb52bed0[0m <[0;33mcol:5[0m, [0;33mcol:11[0m> [0;33mcol:11[0m used[0;1;36m y[0m [0;32m'int'[0m
+[0;34m| | |-[0m[0;1;35mBinaryOperator[0m[0;33m 0x5e73bb52c0a8[0m <[0;33mline:40:5[0m, [0;33mcol:17[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m '='
+[0;34m| | | |-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52bf68[0m <[0;33mcol:5[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x5e73bb52be50[0m[0;1;36m 'x'[0m [0;32m'int'[0m
+[0;34m| | | `-[0m[0;1;35mBinaryOperator[0m[0;33m 0x5e73bb52c088[0m <[0;33mcol:7[0m, [0;33mcol:17[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '+'
+[0;34m| | |   |-[0m[0;1;35mCallExpr[0m[0;33m 0x5e73bb52c028[0m <[0;33mcol:7[0m, [0;33mcol:15[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m
+[0;34m| | |   | |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x5e73bb52c010[0m <[0;33mcol:7[0m> [0;32m'int (*)(int)'[0m[0;36m[0m[0;36m[0m <[0;31mFunctionToPointerDecay[0m>
+[0;34m| | |   | | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52bff0[0m <[0;33mcol:7[0m> [0;32m'int (int)'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mFunction[0m[0;33m 0x5e73bb52bb30[0m[0;1;36m 'foo109'[0m [0;32m'int (int)'[0m
+[0;34m| | |   | `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x5e73bb52c050[0m <[0;33mcol:14[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m| | |   |   `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52bfd0[0m <[0;33mcol:14[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x5e73bb52be50[0m[0;1;36m 'x'[0m [0;32m'int'[0m
+[0;34m| | |   `-[0m[0;1;35mIntegerLiteral[0m[0;33m 0x5e73bb52c068[0m <[0;33mcol:17[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m[0;1;36m 1[0m
+[0;34m| | |-[0m[0;1;35mBinaryOperator[0m[0;33m 0x5e73bb52c218[0m <[0;33mline:41:5[0m, [0;33mcol:39[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m '='
+[0;34m| | | |-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52c0c8[0m <[0;33mcol:5[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x5e73bb52be50[0m[0;1;36m 'x'[0m [0;32m'int'[0m
+[0;34m| | | `-[0m[0;1;35mCallExpr[0m[0;33m 0x5e73bb52c1d8[0m <[0;33mcol:7[0m, [0;33mcol:39[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m
+[0;34m| | |   |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x5e73bb52c1c0[0m <[0;33mcol:7[0m> [0;32m'int (*)(const char *, ...)'[0m[0;36m[0m[0;36m[0m <[0;31mFunctionToPointerDecay[0m>
+[0;34m| | |   | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52c168[0m <[0;33mcol:7[0m> [0;32m'int (const char *, ...)'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mFunction[0m[0;33m 0x5e73ba6e6be0[0m[0;1;36m 'printf'[0m [0;32m'int (const char *, ...)'[0m
+[0;34m| | |   `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x5e73bb52c200[0m <[0;33mcol:14[0m> [0;32m'const char *'[0m[0;36m[0m[0;36m[0m <[0;31mArrayToPointerDecay[0m>
+[0;34m| | |     `-[0m[0;1;35mStringLiteral[0m[0;33m 0x5e73bb52c138[0m <[0;33mcol:14[0m> [0;32m'const char[24]'[0m[0;36m lvalue[0m[0;36m[0m[0;1;36m "Hello World from device"[0m
+[0;34m| | `-[0m[0;1;35mBinaryOperator[0m[0;33m 0x5e73bb52c2e8[0m <[0;33mline:42:5[0m, [0;33mcol:9[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m '='
+[0;34m| |   |-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52c238[0m <[0;33mcol:5[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x5e73bb52bed0[0m[0;1;36m 'y'[0m [0;32m'int'[0m
+[0;34m| |   `-[0m[0;1;35mBinaryOperator[0m[0;33m 0x5e73bb52c2c8[0m <[0;33mcol:7[0m, [0;33mcol:9[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m '+'
+[0;34m| |     |-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x5e73bb52c298[0m <[0;33mcol:7[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m| |     | `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52c258[0m <[0;33mcol:7[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x5e73bb52be50[0m[0;1;36m 'x'[0m [0;32m'int'[0m
+[0;34m| |     `-[0m[0;1;35mImplicitCastExpr[0m[0;33m 0x5e73bb52c2b0[0m <[0;33mcol:9[0m> [0;32m'int'[0m[0;36m[0m[0;36m[0m <[0;31mLValueToRValue[0m>
+[0;34m| |       `-[0m[0;1;35mDeclRefExpr[0m[0;33m 0x5e73bb52c278[0m <[0;33mcol:9[0m> [0;32m'int'[0m[0;36m lvalue[0m[0;36m[0m [0;1;32mVar[0m[0;33m 0x5e73bb52bed0[0m[0;1;36m 'y'[0m [0;32m'int'[0m
+[0;34m| `-[0m[0;1;34mCUDAGlobalAttr[0m[0;33m 0x5e73bb52bde0[0m <[0;33m/opt/cuda/include/crt/host_defines.h:231:22[0m>

@@ -27,13 +27,21 @@ struct dim6_index
     long int block_x,block_y,block_z;
     long int thread_x,thread_y,thread_z;
 };
+__device__
+int foo109(int x)
+{
+    x++;
+    return x+7;
+}
 __global__
-void f00109()
+void f00107()
 {
     int x,y;
+    x=foo109(x)+ 1+ y * 98+x* 87     ;
     printf("Hello World from device");
-    int p,q;
+    y=x+y;
 }
+
 __host__ __device__
 void foo108(int x)
 {
