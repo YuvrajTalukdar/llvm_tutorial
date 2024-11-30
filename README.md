@@ -8,6 +8,8 @@ I have tested the codes on llvm 18.1.8.
 4. experiment3- clang tooling code with cuda support
 5. experiment4- clang tooling code for parsing and printing cuda program.
 6. experiment5- clang tooling code for encaptulating a statement present inside a cuda kernel in a loop.
+7. experiment6- clang tooling code for injecting modification in AST, and generating code from the modified AST.
+8. experiment7- To be implemented in future....
 
 Instructions For experiment1 to experiment5
 1. Use Arch Linux, and be based.

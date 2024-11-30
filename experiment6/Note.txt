@@ -1,0 +1,30 @@
+Achievements in experiment6:-
+1. Adding declarations from ast of fun1.cpp to ast of fun2.cpp.
+2. Generating function code from the ast without accessing the source code.
+
+
+Work to be done in experiment7:-
+1. Fix the RecoveryExpr
+
+-FunctionDecl 0x5b483d021ca8 <input.cc:1:1, line:6:1> line:1:5 add_sub 'int (int, int)'
+| |-ParmVarDecl 0x5b483d021b40 <col:13, col:17> col:17 used x 'int'
+| |-ParmVarDecl 0x5b483d021bc0 <col:19, col:23> col:23 used y 'int'
+| `-CompoundStmt 0x5b483d0220a0 <line:2:1, line:6:1>
+|   |-DeclStmt 0x5b483d021e28 <line:3:5, col:10>
+|   | `-VarDecl 0x5b483d021dc0 <col:5, col:9> col:9 used z 'int'
+|   |-BinaryOperator 0x5b483d022038 <line:4:5, col:23> '<dependent type>' contains-errors '='
+|   | |-DeclRefExpr 0x5b483d021e40 <col:5> 'int' lvalue Var 0x5b483d021dc0 'z' 'int'
+|   | `-BinaryOperator 0x5b483d022018 <col:7, col:23> '<dependent type>' contains-errors '+'
+|   |   |-RecoveryExpr 0x5b483d021f28 <col:7, col:14> '<dependent type>' contains-errors lvalue
+|   |   | |-UnresolvedLookupExpr 0x5b483d021e60 <col:7> '<overloaded function type>' lvalue (ADL) = 'add' empty
+|   |   | |-DeclRefExpr 0x5b483d021ea0 <col:11> 'int' lvalue ParmVar 0x5b483d021b40 'x' 'int'
+|   |   | `-DeclRefExpr 0x5b483d021ec0 <col:13> 'int' lvalue ParmVar 0x5b483d021bc0 'y' 'int'
+|   |   `-RecoveryExpr 0x5b483d021fe0 <col:16, col:23> '<dependent type>' contains-errors lvalue
+|   |     |-UnresolvedLookupExpr 0x5b483d021f60 <col:16> '<overloaded function type>' lvalue (ADL) = 'sub' empty
+|   |     |-DeclRefExpr 0x5b483d021fa0 <col:20> 'int' lvalue ParmVar 0x5b483d021b40 'x' 'int'
+|   |     `-DeclRefExpr 0x5b483d021fc0 <col:22> 'int' lvalue ParmVar 0x5b483d021bc0 'y' 'int'
+|   `-ReturnStmt 0x5b483d022090 <line:5:5, col:12>
+|     `-ImplicitCastExpr 0x5b483d022078 <col:12> 'int' <LValueToRValue>
+|       `-DeclRefExpr 0x5b483d022058 <col:12> 'int' lvalue Var 0x5b483d021dc0 'z' 'int'
+
+2. Injecting nodes at specific location in the ast
