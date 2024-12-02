@@ -31,3 +31,56 @@ Work to be done in experiment7:-
 7. Create a new compound Stmt from the Stmt vector.
 8. Set the compount Stmt created in step 7 as the fody of the target function.
 9. Generate the new source code from the mutated AST. 
+
+10. MutateAST2.cpp: Advanced example to ast mutation.
+    a. for(int a=0;a<10;a++)//E
+        {//C
+
+        }
+    b. c'//
+        if(a<5)
+        {
+            a+=7;
+            cout<<a;
+        }
+        else
+        {
+            a-=7;
+            cout<<a;
+        }
+        a=a*8-4;
+
+    c. transform this 
+    int main()
+    {
+        int x=7;
+        for(int a=0;a<10;a++)//E
+        {//C
+            x+=add(4,7);
+            x=x*4+sub(7,x);
+        }
+        cout<<x;
+        return 0;
+    }
+    
+    to
+
+    int main()
+    {
+        int x=7;
+        for(int a=0;a<10;a++)//E
+        {//C'
+            if(a>10)
+            {
+                x+=add(4,a);
+                x=x*4+sub(a,x);
+            }
+            else
+            {
+                x-=add(4,a);
+                x=x/4-sub(a,x);
+            }
+        }
+        cout<<x;
+        return 0;
+    }

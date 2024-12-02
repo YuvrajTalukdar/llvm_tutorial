@@ -41,6 +41,7 @@ include_directories(${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 
 add_executable(MutateAST MutateAST.cpp)
+add_executable(MutateAST2 MutateAST2.cpp)
 add_executable(create_inject_generate create_inject_generate.cpp)
 
 # Link against `libclang-cpp` and `libLLVM`
@@ -48,6 +49,7 @@ add_executable(create_inject_generate create_inject_generate.cpp)
 #target_link_libraries(PrintProgram PRIVATE clang-cpp LLVM /opt/cuda/lib64/libcudart.so)
 #target_link_libraries(ChangeAST PRIVATE clang-cpp LLVM /opt/cuda/lib64/libcudart.so)
 target_link_libraries(MutateAST PRIVATE clang-cpp LLVM /opt/cuda/lib64/libcudart.so)
+target_link_libraries(MutateAST2 PRIVATE clang-cpp LLVM /opt/cuda/lib64/libcudart.so)
 target_link_libraries(create_inject_generate PRIVATE clang-cpp LLVM /opt/cuda/lib64/libcudart.so)
 #target_link_libraries(ModifyProgram PRIVATE ${/usr/lib/libclang.so.18.1.8} LLVM)
 
