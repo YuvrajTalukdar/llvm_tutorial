@@ -6,18 +6,6 @@
 #include "clang/Rewrite/Core/Rewriter.h"
 #include "llvm/Support/raw_ostream.h"
 
-#include "clang/Sema/Sema.h"
-#include "clang/Frontend/CompilerInstance.h"
-
-
-//#include "clang/AST/ASTContext.h"
-//#include "clang/AST/Decl.h"
-//#include "clang/Frontend/ASTUnit.h"
-//#include "clang/Frontend/CompilerInstance.h"
-//#include "clang/Frontend/FrontendActions.h"
-//#include "llvm/Support/CommandLine.h"
-//#include "llvm/Support/FileSystem.h"
-
 using namespace clang;
 using namespace clang::tooling;
 
@@ -96,10 +84,9 @@ void GenerateSource(ASTContext &funcASTContext) {
 
 class FunctionASTConsumer : public ASTConsumer {
     ASTContext *mainASTContext;
-    Sema &sema;
 
 public:
-    explicit FunctionASTConsumer(ASTContext *mainContext, Sema &semaInstance) : mainASTContext(mainContext), sema(semaInstance) {}
+    explicit FunctionASTConsumer(ASTContext *mainContext) : mainASTContext(mainContext) {}
 
     void HandleTranslationUnit(ASTContext &funcASTContext) override {
         llvm::outs() << "=== Parsing Function File with Main File Context ===\n";
@@ -138,11 +125,8 @@ public:
     explicit FunctionASTAction(ASTContext *mainContext) : mainASTContext(mainContext) {}
 
     // Provide a custom ASTConsumer
-    /*std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI, llvm::StringRef file) override {
-        return std::make_unique<FunctionASTConsumer>(mainASTContext);
-    }*/
     std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI, llvm::StringRef file) override {
-        return std::make_unique<FunctionASTConsumer>(mainASTContext, CI.getSema());
+        return std::make_unique<FunctionASTConsumer>(mainASTContext);
     }
 };
 
