@@ -1,0 +1,9 @@
+1. Example code for generating a call graph using readymade functions provided by clang.
+2. Example code for performing a DFS on the generated call graph.
+
+3. Dumping the call graph directly using clang-
+clang++ -Xclang -analyze -Xclang -analyzer-checker=debug.ViewCallGraph fun1.cpp
+dot file gets saved in /tmt/ directory.
+
+4. dot file to ps format (can be opened by Okular)
+dot -Tps CallGraph-8f8ba7.dot -o out.ps
